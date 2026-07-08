@@ -1,0 +1,10 @@
+{
+    entry = {
+        bundle = "VLCCrossfadePrefs";
+        cell = "PSLinkCell";
+        detail = "VLCCFPrefsListController";
+        icon = "icon.png";
+        isController = 1;
+        label = "VLC Crossfade";
+    };
+}

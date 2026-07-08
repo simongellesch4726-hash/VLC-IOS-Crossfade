@@ -1,0 +1,18 @@
+{
+    items = (
+        { cell = PSGroupCell; label = "VLC Crossfade"; footerText = "Adds crossfade between tracks and fade in/out on play/pause."; },
+        { cell = PSSwitchCell; default = 1; defaults = "com.lovable.vlccrossfade"; key = "Enabled"; label = "Enabled"; PostNotification = "com.lovable.vlccrossfade/prefsChanged"; },
+
+        { cell = PSGroupCell; label = "Crossfade"; },
+        { cell = PSSliderCell; default = 6.0; defaults = "com.lovable.vlccrossfade"; key = "Duration"; min = 1.0; max = 12.0; showValue = 1; PostNotification = "com.lovable.vlccrossfade/prefsChanged"; },
+        { cell = PSSegmentCell; default = "equalPower"; defaults = "com.lovable.vlccrossfade"; key = "Curve"; label = "Curve";
+          validTitles = ( "Linear", "Equal Power" );
+          validValues = ( "linear", "equalPower" );
+          PostNotification = "com.lovable.vlccrossfade/prefsChanged"; },
+
+        { cell = PSGroupCell; label = "Play / Pause"; },
+        { cell = PSSwitchCell; default = 1; defaults = "com.lovable.vlccrossfade"; key = "FadeOnPlayPause"; label = "Fade on Play/Pause"; PostNotification = "com.lovable.vlccrossfade/prefsChanged"; },
+        { cell = PSSliderCell; default = 0.4; defaults = "com.lovable.vlccrossfade"; key = "PlayPauseFadeDuration"; min = 0.05; max = 2.0; showValue = 1; PostNotification = "com.lovable.vlccrossfade/prefsChanged"; }
+    );
+    title = "VLC Crossfade";
+}

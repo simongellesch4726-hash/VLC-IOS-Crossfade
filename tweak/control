@@ -1,0 +1,9 @@
+Package: com.lovable.vlccrossfade
+Name: VLC Crossfade
+Version: 0.1.0
+Architecture: iphoneos-arm64e
+Description: Adds crossfade and fade in/out to VLC for iOS.
+Maintainer: Lovable
+Author: Lovable
+Section: Tweaks
+Depends: mobilesubstrate | ellekit, preferenceloader
