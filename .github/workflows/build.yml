@@ -19,17 +19,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Add Procursus repository (for ldid)
-        run: |
-          sudo mkdir -p /etc/apt/keyrings
-          curl -fsSL https://apt.procurs.us/bootstrap/stable.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/procursus.gpg
-          echo "deb [signed-by=/etc/apt/keyrings/procursus.gpg] https://apt.procurs.us/ stable main" | sudo tee /etc/apt/sources.list.d/procursus.list
-
       - name: Install build dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            build-essential fakeroot rsync curl perl zip unzip xz-utils ldid git ca-certificates
+            build-essential fakeroot rsync curl perl zip unzip xz-utils git ca-certificates
+          # Install ldid directly from ProcursusTeam release (static binary)
+          sudo curl -Lo /usr/local/bin/ldid \
+            https://github.com/ProcursusTeam/ldid/releases/download/v2.1.5-procursus7/ldid_2.1.5-procursus7_linux_amd64
+          sudo chmod +x /usr/local/bin/ldid
 
       - name: Cache Theos
         id: theos-cache
