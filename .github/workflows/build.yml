@@ -1,0 +1,69 @@
+name: Build VLCCrossfade (arm64e, roothide)
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+    paths:
+      - "tweak/**"
+      - ".github/workflows/build-tweak.yml"
+  pull_request:
+    paths:
+      - "tweak/**"
+      - ".github/workflows/build-tweak.yml"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential fakeroot rsync curl perl zip unzip xz-utils ldid git ca-certificates
+
+      - name: Cache Theos
+        id: theos-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/theos
+          key: theos-roothide-${{ runner.os }}-v1
+
+      - name: Install roothide Theos
+        if: steps.theos-cache.outputs.cache-hit != 'true'
+        run: |
+          git clone --recursive https://github.com/roothide/theos ~/theos
+          # Toolchain (Linux, Swift + Obj-C)
+          mkdir -p ~/theos/toolchain
+          curl -L https://github.com/kabiroberai/swift-toolchain-linux/releases/latest/download/swift-5.8-ubuntu22.04.tar.xz \
+            | tar -xJ -C ~/theos/toolchain
+          # roothide SDKs
+          mkdir -p ~/theos/sdks
+          curl -L https://github.com/theos/sdks/archive/refs/heads/master.tar.gz \
+            | tar -xz --strip-components=1 -C ~/theos/sdks
+
+      - name: Build tweak (arm64e, roothide)
+        env:
+          THEOS: /home/runner/theos
+        run: |
+          export PATH="$THEOS/toolchain/linux/iphone/bin:$THEOS/toolchain/swift/usr/bin:$PATH"
+          cd tweak
+          make clean
+          make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=roothide
+
+      - name: Upload .deb artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: VLCCrossfade-roothide-arm64e
+          path: tweak/packages/*.deb
+          if-no-files-found: error
+
+      - name: Publish release on tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: tweak/packages/*.deb
+          generate_release_notes: true
