@@ -49,6 +49,15 @@ jobs:
           curl -L https://github.com/theos/sdks/archive/refs/heads/master.tar.gz \
             | tar -xz --strip-components=1 -C ~/theos/sdks
 
+      - name: Install MobileVLCKit
+        run: |
+          # Download a stable release of MobileVLCKit
+          curl -L -o MobileVLCKit.xcframework.zip \
+            https://download.videolan.org/pub/videolan/vlc-iOS/3.6.0/MobileVLCKit.xcframework.zip
+          unzip -q MobileVLCKit.xcframework.zip -d $THEOS/lib
+          # List the extracted files to verify (optional)
+          ls -la $THEOS/lib/MobileVLCKit.xcframework/ios-arm64_arm64e/
+
       - name: Build tweak (arm64e, roothide)
         env:
           THEOS: /home/runner/theos
